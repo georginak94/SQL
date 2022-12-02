@@ -1,0 +1,125 @@
+-- Created a Nail Supply store stored database
+
+CREATE TABLE zee_rose_nails (id integer primary key, item_name TEXT, genre TEXT, colour TEXT, price integer, stock integer);
+
+INSERT INTO zee_rose_nails VALUES
+(1, "cuticle pusher", 'tools', 'silver', 3.5, 5),
+(2, 'nail file', 'tools', 'grey', 1.5, 150),
+(3, 'xxl tips', 'nail tips', 'clear', 18, 9),
+(4, 'nail glue', 'tools', 'pink', 2, 43),
+(5, 'short tips', 'nail tips', 'white', 15, 5),
+(6, 'acrylic powder', 'core powder', 'clear', 12.75, 32),
+(7, 'acrylic powder', 'core powder', 'white', 12.74, 25),
+(8, 'acrylic powder', 'core powder', 'pink', 12.74, 21),
+(9, 'angel hearts', 'colour acrylic', 'silver', 8, 5),
+(10, 'peach crush', 'colour acrylic', 'pink', 8, 17),
+(11, 'ocean crush', 'colour acrylic', 'blue', 8, 6),
+(12, 'angel wings', 'colour acrylic', 'white', 8, 2),
+(13, 'prosecco', 'colour acrylic', 'gold', 8, 6),
+(14, 'tropical sunrise', 'colour acrylic', 'orange', 8, 12),
+(15, 'efile', 'tools', 'black', 350, 15),
+(16, 'led lamp', 'nail lamps', 'black', 8, 6),
+(17, 'cuticle oil', 'nail health', 'clear', 3, 6);
+
+--Orders all data by price in descending order. 
+SELECT * 
+FROM zee_rose_nails 
+ORDER BY price DESC;
+
+-- What black items are in stock? 
+SELECT item_name, price, stock 
+FROM zee_rose_nails
+WHERE colour = 'black'; 
+
+-- What items are  black & under £200?
+SELECT item_name, price, stock 
+FROM zee_rose_nails
+WHERE colour = 'black' AND price < 200;
+
+--Which genre (as department) has the most expensive item price?
+SELECT genre, MAX(price) AS department 
+FROM zee_rose_nails;
+
+--What is the item from the previous query? - answered this normlly as well as in subquery form.
+
+SELECT item_name, genre, price
+FROM zee_rose_nails
+WHERE PRICE = 350; 
+
+SELECT item_name
+FROM zee_rose_nails
+WHERE price IN 
+    (SELECT price
+    FROM zee_rose_nails
+    WHERE price = '350'); 
+
+--How much product stock is there per genre?
+SELECT genre, SUM(stock) 
+FROM zee_rose_nails 
+GROUP BY genre; 
+
+
+--Which item is about to run out of stock/ has the least amount of stock?
+SELECT item_name, MIN(stock) 
+FROM zee_rose_nails;
+
+--What colour acrylics do we sell and how much stock do we have of each?
+SELECT item_name, stock 
+FROM zee_rose_nails 
+WHERE genre = 'colour acrylic'; 
+
+-- Which items and how many of them do we have that are priced £10 or more?
+SELECT item_name, COUNT(item_name), price FROM zee_rose_nails
+WHERE price >=10
+GROUP BY item_name
+ORDER BY price;
+
+-- What are the unique names of the items we sell?
+SELECT distinct item_name 
+FROM zee_rose_nails; 
+
+--What is th total cost per genre? List it cheapest to the most exensive.
+SELECT genre, sum(price) FROM zee_rose_nails
+GROUP BY genre
+ORDER BY price ASC;
+
+-- What acrylic & colour powder products do we sell? List all thier details.
+SELECT * FROM zee_rose_nails 
+where genre like "co%";
+
+SELECT * FROM zee_rose_nails
+WHERE genre = "core powder" OR genre = "colour acrylic"
+ORDER BY Price; 
+
+
+-- Same as before just with column alias'. 
+SELECT id, item_name AS product, price AS cost, genre AS department, stock  
+FROM zee_rose_nails
+WHERE genre like "co%"; 
+
+
+-- What information do we hold for Acrylic colours and powder products that have 'crush' in their name. How much stock do we have for each product? Alias the column names for better understanding.
+SELECT item_name, count(item_name) AS product_count, price AS cost, genre AS department, stock  
+FROM zee_rose_nails
+WHERE item_name like "%crush"
+GROUP BY item_name;
+
+--Which 'crush' product has a stock count of less than 10?
+SELECT item_name, count(item_name) AS product_count, price AS cost, genre AS department, stock  
+FROM zee_rose_nails
+WHERE item_name like "%crush"
+GROUP BY item_name
+HAVING stock < 10; 
+
+--What is the avg price of items in the tools genre?
+SELECT genre, avg(price) AS average_price
+FROM zee_rose_nails
+WHERE genre = "tools";  
+
+--What are the top 5 expensive products we sell? 
+SELECT item_name, genre, price 
+FROM zee_rose_nails
+ORDER BY price DESC
+LIMIT 5; 
+
+
